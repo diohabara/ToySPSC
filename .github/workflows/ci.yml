@@ -6,38 +6,50 @@ on:
   pull_request:
 
 jobs:
-  test:
+  build-image:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Build image
+      - uses: extractions/setup-just@v3
+      - name: Ensure podman
+        run: |
+          if ! command -v podman >/dev/null 2>&1; then
+            sudo apt-get update
+            sudo apt-get install -y podman
+          fi
+      - name: Build dev image
         run: just image
-      - name: Run tests
-        run: just test
+      - name: Export image
+        run: podman save toyspsc:dev -o /tmp/toyspsc-dev.tar
+      - uses: actions/upload-artifact@v4
+        with:
+          name: toyspsc-dev-image
+          path: /tmp/toyspsc-dev.tar
+          retention-days: 1
 
-  fmt:
+  check:
+    needs: build-image
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        recipe: [fmt-check, lint, test, bench]
+    env:
+      RECIPE: ${{ matrix.recipe }}
     steps:
       - uses: actions/checkout@v4
-      - name: Build image
-        run: just image
-      - name: Check formatting
-        run: just fmt-check
-
-  lint:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Build image
-        run: just image
-      - name: clang-tidy
-        run: just lint
-
-  bench-smoke:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Build image
-        run: just image
-      - name: Run benchmarks (smoke)
-        run: just bench
+      - uses: extractions/setup-just@v3
+      - name: Ensure podman
+        run: |
+          if ! command -v podman >/dev/null 2>&1; then
+            sudo apt-get update
+            sudo apt-get install -y podman
+          fi
+      - uses: actions/download-artifact@v4
+        with:
+          name: toyspsc-dev-image
+          path: /tmp
+      - name: Load image
+        run: podman load -i /tmp/toyspsc-dev.tar
+      - name: Run just recipe
+        run: just "$RECIPE"
