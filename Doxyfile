@@ -1,0 +1,13 @@
+PROJECT_NAME           = "ToySPSC"
+PROJECT_BRIEF          = "Toy lock-free SPSC ring buffer"
+OUTPUT_DIRECTORY       = build/docs
+INPUT                  = src README.md
+RECURSIVE              = YES
+USE_MDFILE_AS_MAINPAGE = README.md
+EXTRACT_ALL            = YES
+EXTRACT_PRIVATE        = YES
+EXTRACT_STATIC         = YES
+GENERATE_HTML          = YES
+GENERATE_LATEX         = NO
+QUIET                  = YES
+WARN_IF_UNDOCUMENTED   = NO
