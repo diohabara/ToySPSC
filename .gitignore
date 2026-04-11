@@ -1,0 +1,12 @@
+build/
+build-bench/
+build-cov/
+build-profile/
+.direnv/
+.worktrees/
+.cache/
+result
+result-*
+perf.data
+perf.data.old
+callgrind.out.*
