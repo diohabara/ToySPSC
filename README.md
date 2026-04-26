@@ -55,7 +55,3 @@ hardware counters.
 └── bench/
     └── sanity_bench.cc  # Google Benchmark placeholder
 ```
-
-## Acknowledgements
-
-The tooling layout follows [diohabara/mini-oems](https://github.com/diohabara/mini-oems).

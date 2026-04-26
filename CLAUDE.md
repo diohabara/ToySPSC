@@ -16,7 +16,8 @@ Guidance for Claude Code when working inside this repository.
 | ------------------------------------ | ------------------------------------- |
 | `#include <print>`, `std::println`   | `#include <iostream>`, `std::cout`    |
 | `std::format`, `std::formatted_size` | `snprintf`, `std::ostringstream`      |
-| `std::expected<T, E>`                | error-code out-params, sentinel ints  |
+| `std::expected<T, E>`                | error-code out-params, sentinel ints (for recoverable errors) |
+| `std::optional<T>`                   | sentinel values, bool + out-param (for "value may not exist" semantics) |
 | `std::span<T>`, `std::mdspan`        | `T*` + length, raw 2D arrays          |
 | `std::string_view`                   | `const char*` + length, `const std::string&` for read-only params |
 | `std::ranges::*` / views             | hand-rolled index loops over `std::vector` |
@@ -29,6 +30,7 @@ Guidance for Claude Code when working inside this repository.
 | Concepts + `requires`                | SFINAE, `enable_if`                   |
 | `std::jthread`, `std::stop_token`    | `std::thread` + manual join           |
 | `std::atomic_ref`                    | ad-hoc `reinterpret_cast` to atomic   |
+| `std::int32_t`, `std::uint64_t` etc. | bare `int`, `unsigned long` (use fixed-width types from `<cstdint>`) |
 
 ## SPSC-specific guidance (for when the implementation lands)
 
@@ -50,7 +52,8 @@ Guidance for Claude Code when working inside this repository.
 - `NULL`, `0` for pointer literals. Use `nullptr`.
 - `typedef`. Use `using` aliases.
 - Uncaught exceptions in `noexcept` code paths.
-- Manual loops where `std::ranges` reads better.
+- Raw `for` / `while` loops. Use `std::ranges` algorithms, `std::views`,
+  `std::ranges::for_each` etc. Write functional style over imperative loops.
 - `import std;`. GCC 14's named-module support for the standard library is
   still experimental and requires opting into `CMAKE_EXPERIMENTAL_CXX_MODULE_*`.
   We stay on header includes until the toolchain stabilises — revisit when we
@@ -66,7 +69,7 @@ host — use the container.
 just image      # build toyspsc:dev
 just test       # cmake + ctest
 just bench      # Google Benchmark
-just profile    # perf stat + perf record + perf report --stdio
+just profile    # perf stat/report/annotate + flamegraph.svg + cachegrind
 just lint       # clang-tidy
 just fmt-check  # clang-format --dry-run --Werror
 ```
@@ -78,3 +81,5 @@ Before claiming any change is complete:
 3. `just test` — all ctest targets must pass.
 4. If the change touches SPSC hot paths, also run `just bench` and
    `just profile` to sanity-check cache-miss / branch-miss counters.
+5. If the change affects implementation behaviour or design, update the
+   corresponding documentation under `docs/` to keep code and docs in sync.
