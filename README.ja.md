@@ -56,8 +56,3 @@ just clean      # build-* と perf.data を削除
 └── bench/
     └── sanity_bench.cc  # Google Benchmark プレースホルダ
 ```
-
-## 謝辞
-
-周辺ツールの構成は [diohabara/mini-oems](https://github.com/diohabara/mini-oems)
-を参考にしています。

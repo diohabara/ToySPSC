@@ -10,3 +10,6 @@ result-*
 perf.data
 perf.data.old
 callgrind.out.*
+cachegrind.out
+cachegrind.out.*
+flamegraph.svg

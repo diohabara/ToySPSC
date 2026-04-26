@@ -12,4 +12,8 @@ RUN nix profile install \
     nixpkgs#linuxPackages.perf \
     nixpkgs#valgrind
 
+RUN nix profile install nixpkgs#python3 nixpkgs#perl
+
+RUN nix-shell -p git --run 'git clone --depth 1 https://github.com/brendangregg/FlameGraph.git /opt/FlameGraph'
+
 WORKDIR /work

@@ -1,2 +1,2 @@
-add_executable(toyspsc_bench sanity_bench.cc)
+add_executable(toyspsc_bench sanity_bench.cc spsc_queue_bench.cc)
 target_link_libraries(toyspsc_bench PRIVATE benchmark::benchmark_main toyspsc_lib)
