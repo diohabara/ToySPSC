@@ -30,6 +30,19 @@ class SpscQueue {
   auto operator=(SpscQueue&&) -> SpscQueue& = delete;
   ~SpscQueue() = default;
 
+  [[nodiscard]] static constexpr auto capacity() noexcept -> std::size_t { return Capacity; }
+
+  /// Return a bounded snapshot of the current queue depth.
+  [[nodiscard]] auto size() const noexcept -> std::size_t {
+    const auto head = head_.load(std::memory_order_acquire);
+    const auto tail = tail_.load(std::memory_order_acquire);
+    return tail - head;
+  }
+
+  [[nodiscard]] auto empty() const noexcept -> bool { return size() == 0; }
+
+  [[nodiscard]] auto full() const noexcept -> bool { return size() == Capacity; }
+
   /// Producer-side: enqueue a value. Returns false if the queue is full.
   [[nodiscard]] auto try_push(const T& value) noexcept -> bool {
     const auto tail = tail_.load(std::memory_order_relaxed);

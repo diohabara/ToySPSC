@@ -14,6 +14,7 @@ auto main() -> int {
     std::ranges::for_each(std::views::iota(std::int32_t{0}, std::int32_t{5}),
                           [&queue](std::int32_t i) {
                             while (!queue.try_push(i)) {
+                              std::this_thread::yield();
                             }
                             std::println("Pushed: {}", i);
                           });
@@ -24,6 +25,7 @@ auto main() -> int {
                           [&queue]([[maybe_unused]] std::int32_t) {
                             std::optional<std::int32_t> val;
                             while (!(val = queue.try_pop())) {
+                              std::this_thread::yield();
                             }
                             std::println("Popped: {}", *val);
                           });

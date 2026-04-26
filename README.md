@@ -4,9 +4,10 @@ Toy lock-free single-producer / single-consumer (SPSC) ring buffer written in C+
 
 > 日本語版は [`README.ja.md`](./README.ja.md)
 
-At the moment the source tree only ships a `Hello, ToySPSC` main — the purpose of
-this repository is to host the surrounding developer tooling so that the SPSC
-implementation can land into a ready-made build, test, bench, profile and CI loop.
+The source tree currently includes a header-only `SpscQueue<T, Capacity>`, a
+small producer/consumer demo, GoogleTest coverage, and Google Benchmark
+microbenchmarks. The queue is fixed-capacity, power-of-two sized, and intended
+for one producer thread and one consumer thread.
 
 ## Requirements
 
@@ -48,10 +49,12 @@ hardware counters.
 ├── .clang-tidy          # bugprone/cert/cppcore/modernize/...
 ├── .github/workflows/   # GitHub Actions CI (test / fmt / lint / bench-smoke)
 ├── src/
-│   ├── main.cc          # hello world placeholder
-│   └── spsc/            # future home of the SPSC headers
+│   ├── main.cc          # small SPSC producer/consumer demo
+│   └── spsc/            # header-only SPSC queue implementation
 ├── test/
-│   └── sanity_test.cc   # GoogleTest placeholder
+│   ├── sanity_test.cc
+│   └── spsc_queue_test.cc
 └── bench/
-    └── sanity_bench.cc  # Google Benchmark placeholder
+    ├── sanity_bench.cc
+    └── spsc_queue_bench.cc
 ```
