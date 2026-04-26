@@ -4,9 +4,9 @@ C++23 で書くおもちゃのロックフリー Single-Producer / Single-Consum
 
 > English version: [`README.md`](./README.md)
 
-現時点では `Hello, ToySPSC` を出力する main しか入っていません。このリポジトリの
-役割は、SPSC 本体を書き始めたときに即座にビルド・テスト・ベンチ・プロファイル・CI
-が回るよう、周辺ツールを揃えておくことです。
+現在のソースツリーには、ヘッダオンリーの `SpscQueue<T, Capacity>`、小さな
+producer/consumer デモ、GoogleTest、Google Benchmark マイクロベンチが入っています。
+キューは固定容量・2 のべき乗サイズで、1 producer スレッドと 1 consumer スレッド向けです。
 
 ## 前提
 
@@ -49,10 +49,12 @@ just clean      # build-* と perf.data を削除
 ├── .clang-tidy          # bugprone/cert/cppcore/modernize/...
 ├── .github/workflows/   # GitHub Actions CI (test / fmt / lint / bench-smoke)
 ├── src/
-│   ├── main.cc          # hello world プレースホルダ
-│   └── spsc/            # 将来 SPSC ヘッダを置く場所
+│   ├── main.cc          # 小さな SPSC producer/consumer デモ
+│   └── spsc/            # ヘッダオンリーの SPSC キュー実装
 ├── test/
-│   └── sanity_test.cc   # GoogleTest プレースホルダ
+│   ├── sanity_test.cc
+│   └── spsc_queue_test.cc
 └── bench/
-    └── sanity_bench.cc  # Google Benchmark プレースホルダ
+    ├── sanity_bench.cc
+    └── spsc_queue_bench.cc
 ```
